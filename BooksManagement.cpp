@@ -13,17 +13,23 @@ void BooksManagement::AddBookTolibrary()
 {
     Book book;
     int Choice;
+    cout <<termcolor::on_cyan;
+    cout <<termcolor::bright_white;
     cout << "Enter Book Title: ";
     fflush(stdin);
     getline(cin, book.Title);
 
     if (Library.BookExist(book.Title))
     {
-        // cout << "\nA Book With The Same Title Exists. Choice Different Title Please\n\n";
-        ErrorBM = "\nA Book With The Same Title Exists. Choice Different Title Please\n\n";
+       cout <<termcolor::bright_white;
+       cout <<termcolor::on_bright_red;
+       cout << "\nError: A Book With The Same Title Exists. Choice Different Title Please\n\n";
+       cout <<termcolor::reset;
     }
     else
     {
+        cout <<termcolor::on_cyan;
+        cout <<termcolor::bright_white;
         cout << "Enter Book Author: ";
         fflush(stdin);
         getline(cin, book.Author);
@@ -46,13 +52,17 @@ void BooksManagement::AddBookTolibrary()
             book.Category = "Science";
             break;
         default:
-            // cout << "Invalid category choice. Defaulting to Fiction.\n";
-            ErrorBM = "Invalid category choice. Defaulting to Fiction.\n";
+            cout <<termcolor::bright_white;
+            cout <<termcolor::on_bright_red;
+            cout << "Invalid category choice. Defaulting to Fiction.\n";
             book.Category = "Fiction";
             break;
         }
 
+        cout <<termcolor::bright_white;
+        cout <<termcolor::on_cyan;
         cout << "Enter Book Price: ";
+        cout <<termcolor::reset;
         cin >> book.Price;
 
         Library.InsertAtBegnning(book);
@@ -75,33 +85,47 @@ void BooksManagement::PrintBooks()
 
 void BooksManagement::PrintByCategory()
 {
-    int Choice;
-    string Category;
-    cout << "1. Fiction\n2. History\n3. Mystery\n4. Science\n";
-    cout << "choice Book Category: ";
-    cin >> Choice;
-    switch (Choice)
+    if(Library.IsEmpty())
     {
-    case 1:
-        Category = "Fiction";
-        break;
-    case 2:
-        Category = "History";
-        break;
-    case 3:
-        Category = "Mystery";
-        break;
-    case 4:
-        Category = "Science";
-        break;
-    default:
-        // cout << "Invalid category choice. Defaulting to Fiction.\n";
-        ErrorBM = "Invalid category choice. Defaulting to Fiction.\n";
-        Category = "Fiction";
-        break;
+        cout <<termcolor::bright_white;
+        cout <<termcolor::on_bright_red;
+        cout<<"\nError: The Library Is Empty At The Moment\n\n";
+        cout <<termcolor::reset;
     }
+    else
+    {
+        int Choice;
+        string Category;
+        cout <<termcolor::yellow;
+        cout << "1. Fiction\n2. History\n3. Mystery\n4. Science\n";
+        cout << "choice Book Category: ";
+         cout <<termcolor::reset;
+        cin >> Choice;
+        switch (Choice)
+        {
+        case 1:
+            Category = "Fiction";
+            break;
+        case 2:
+            Category = "History";
+            break;
+        case 3:
+            Category = "Mystery";
+            break;
+        case 4:
+            Category = "Science";
+            break;
+        default:
+            cout <<termcolor::bright_white;
+            cout <<termcolor::on_bright_red;
+            cout << "Invalid category choice. Defaulting to Fiction.\n";
+            cout <<termcolor::reset;
+            Category = "Fiction";
+            break;
+        }
 
-    Library.PrintByCategory(Category);
+        Library.PrintByCategory(Category);
+    }
 }
 
 /**
@@ -111,26 +135,33 @@ void BooksManagement::PrintByCategory()
 
 void BooksManagement::SearchForBook()
 {
-    if(Library.IsEmpty())
+    if (Library.IsEmpty())
     {
-        // cout<<"\nThe List Is Embty At The Moment\n\n";
-        ErrorBM = "\nThe List Is Embty At The Moment\n\n";
+        cout <<termcolor::bright_white;
+        cout <<termcolor::on_bright_red;
+        cout<<"\nError: The Library Is Empty At The Moment\n\n";
+        cout <<termcolor::reset;
     }
     else
     {
         string Title;
+        cout <<termcolor::bright_white;
+        cout <<termcolor::on_yellow;
         cout << "Enter Book Title: ";
+        cout <<termcolor::reset;
         fflush(stdin);
         getline(cin, Title);
-        Book Temp = Library.Search(Title);
-        if (Temp.Title == "")
+        Book *Temp = Library.Search(Title);
+        if (Temp->Title == "")
         {
-            // cout << "\nNo Book With Such Name\n\n";
-            ErrorBM = "\nNo Book With Such Name\n\n";
+            cout <<termcolor::bright_white;
+            cout <<termcolor::on_bright_red;
+            cout << "\nNo Book With Such Name\n\n";
+            cout <<termcolor::reset;
         }
         else
         {
-            Library.PrintBook(Temp);
+            Library.PrintBook(*Temp);
         }
     }
 }
@@ -141,9 +172,64 @@ void BooksManagement::SearchForBook()
 
 void BooksManagement::UpdateBook()
 {
-    DeleteBook();
-    cout << "\nEnter New Data\n";
-    AddBookTolibrary();
+    string Title;
+    Book *book = nullptr;
+    int Choice;
+
+    cout << "Enter Book Title: ";
+    fflush(stdin);
+    getline(cin, Title);
+    book = Library.Search(Title);
+    if (book == nullptr)
+    {
+    }
+    else
+    {
+        Library.PrintBook(*book);
+
+        cout <<termcolor::yellow;
+        cout << "\nEnter New Data\n\n";
+        cout <<termcolor::yellow;
+
+        cout << "Enter Book Title: ";
+        fflush(stdin);
+        getline(cin, book->Title);
+
+        cout << "Enter Book Author: ";
+        fflush(stdin);
+        getline(cin, book->Author);
+        cout << "1. Fiction\n2. History\n3. Mystery\n4. Science\n";
+        cout << "choice Book Category: ";
+        cin >> Choice;
+
+        switch (Choice)
+        {
+        case 1:
+            book->Category = "Fiction";
+            break;
+        case 2:
+            book->Category = "History";
+            break;
+        case 3:
+            book->Category = "Mystery";
+            break;
+        case 4:
+            book->Category = "Science";
+            break;
+        default:
+            cout << "Invalid category choice. Defaulting to Fiction.\n";
+            book->Category = "Fiction";
+            break;
+        }
+
+        cout << "Enter Book Price: ";
+        cin >> book->Price;
+
+        cout <<termcolor::bright_white;
+        cout <<termcolor::on_bright_green;
+        cout <<"Update Done\n";
+        cout <<termcolor::reset;
+    }
 }
 
 /**
@@ -152,14 +238,31 @@ void BooksManagement::UpdateBook()
 
 void BooksManagement::DeleteBook()
 {
-    int Index;
-    Library.PrintForward();
-    cout << "\n";
-    cout << "Entere Book Index: ";
-    cin >> Index;
+    if (Library.IsEmpty())
+    {
+        cout <<termcolor::bright_white;
+        cout <<termcolor::on_bright_red;
+        cout<<"\nError: The Library Is Empty At The Moment\n\n";
+        cout <<termcolor::reset;
+    }
+    else
+    {
+        int Index;
+        Library.PrintForward();
+        cout << "\n";
+        cout <<termcolor::bright_white;
+        cout <<termcolor::on_bright_magenta;
+        cout << "Enter Book Index: ";
+        cout <<termcolor::reset;
+        cin >> Index;
+        cout<<endl;
 
-    Library.DeleteNode(Index);
-    Library.Sort();
+        Library.DeleteNode(Index);
+        cout <<termcolor::bright_white;
+        cout <<termcolor::on_bright_red;
+        cout << "Deleted\n";
+        cout <<termcolor::reset;
+    }
 }
 
 /**

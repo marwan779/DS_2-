@@ -35,7 +35,7 @@ class DoubleLinkedList
 public:
     DoubleLinkedList();
     void InsertAtBegnning(const Book &Item);
-    Book Search(const string Title);
+    Book* Search(const string Title);
     int Lenght();
     void DeleteNode(const int Location);
     void PrintForward();
@@ -45,7 +45,6 @@ public:
     bool BookExist(const string Title);
     void Sort();
     bool IsEmpty();
-    string Error;
 
 
 protected:
